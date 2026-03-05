@@ -1,12 +1,12 @@
 const roadmapModel = require('../models/roadmap.model');
-const userModel=require('../models/user.model')
-const { generateRoadmap:generateRoadmapAI } = require('../services/gemini.service');
+const userModel = require('../models/user.model')
+const { generateRoadmap: generateRoadmapAI } = require('../services/groq.service');
 
 async function generateRoadmap(req, res) {
   try {
     const userId = req.user.id;
-    const user=await userModel.findById(userId);
-    const personalityType=user.personalityType;
+    const user = await userModel.findById(userId);
+    const personalityType = user.personalityType;
     const { skill } = req.body;
     const roadmap = await generateRoadmapAI(personalityType, skill);
 
@@ -27,12 +27,52 @@ async function generateRoadmap(req, res) {
 
 async function viewRoadmaps(req, res) {
   try {
-    const userId=req.user.id;
-    const roadmap=await roadmapModel.find({userId});
-    res.status(200).json({message:"Your recent roadmap is",roadmap});
+    const userId = req.user.id;
+    const roadmap = await roadmapModel.find({ userId });
+    res.status(200).json({ message: "Your recent roadmap is", roadmap });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" ,err});
+    return res.status(500).json({ message: "Server error", err });
   }
 }
 
-module.exports = { generateRoadmap, viewRoadmaps };
+async function getRoadmap(req, res) {
+
+  try {
+    const roadmapId = req.params.id;
+    const userId = req.user.id;
+    const roadmap = await roadmapModel.findOne({ _id: roadmapId, userId });
+
+    if(!roadmap){
+      return res.status(404).json({message:"The given roadmap doesn't exist"});
+    }
+
+    res.status(200).json({
+      message: "Roadmap fetched successfully",
+      roadmap,
+    })
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error", err })
+  }
+}
+
+async function deleteRoadmap(req, res) {
+  try {
+    const roadmapId = req.params.id;
+    const userId = req.user.id;
+    const roadmap = await roadmapModel.findOneAndDelete({ _id: roadmapId, userId });
+
+    if(!roadmap){
+      return res.status(404).json({message:"The given roadmap doesn't exist"});
+    }
+
+    return res.status(200).json({
+      message: "The roadmap is deleted successfully",
+      roadmap,
+    })
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err });
+  }
+}
+
+module.exports = { generateRoadmap, viewRoadmaps, getRoadmap, deleteRoadmap };
