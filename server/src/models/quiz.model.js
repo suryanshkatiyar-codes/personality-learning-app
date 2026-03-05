@@ -26,3 +26,5 @@ const quizSchema=new mongoose.Schema({
 },{timestamps:true});
 
 const quizModel=mongoose.model("Quiz",quizSchema);
+
+module.exports=quizModel;

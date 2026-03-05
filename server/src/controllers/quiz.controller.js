@@ -37,7 +37,7 @@ function computePersonality(answers) {
 async function submitQuiz(req, res) {
   try {
     const { answers } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     if (answers.length !== questions.length) {
       return res.status(400).json({
@@ -63,13 +63,14 @@ async function submitQuiz(req, res) {
       quizId: ans._id
     })
   } catch (err) {
+    console.log(err);
     return res.status(400).json({ message: "An error occured", err });
   }
 }
 
 async function getResults(req, res) {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const quiz = await quizModel.findOne({ userId }).sort({ createdAt: -1 }); // find by userId field + sort by latest
     if (!quiz) {
       return res.status(404).json({ message: "No quiz result found" });

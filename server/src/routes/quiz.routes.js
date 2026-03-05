@@ -1,6 +1,6 @@
 const express=require('express');
 const quizController=require('../controllers/quiz.controller');
-const {protect}=require('../middlewares/protect.quiz');
+const {protect}=require('../middlewares/auth.middleware');
 
 const router=express.Router();
 
