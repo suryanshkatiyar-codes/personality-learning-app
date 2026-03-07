@@ -29,7 +29,7 @@ const Login = () => {
       <div className='h-screen flex justify-center items-center'>
         <form onSubmit={(e) => {
           formHandler(e);
-        }} className="flex flex-col gap-2 justify-center border-1 p-25 rounded-2xl">
+        }} className="flex flex-col gap-2 justify-center border-2 p-25 rounded-2xl">
           <input className='border border-zinc-700 bg-zinc-900 text-white px-4 py-2 rounded focus:outline-none focus:border-yellow-300 w-full placeholder-zinc-500 transition-colors duration-200'
           onChange={(e) => {
             setEmail(e.target.value);
