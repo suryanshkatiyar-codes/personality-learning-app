@@ -10,16 +10,17 @@ import Quiz from "./pages/Quiz";
 import Dashboard from "./pages/Dashboard";
 import Roadmap from "./pages/Roadmap";
 import Generate from "./pages/Generate";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     // Step 1: Wrap everything in AuthProvider
     // This gives EVERY page access to user, login, logout etc.
     <AuthProvider>
-
       {/* // Step 2: Wrap everything in Router
       // This enables navigation between pages */}
       <Router>
+        <Navbar/>
         <Routes>
 
           {/* Public Routes - anyone can visit these */}
