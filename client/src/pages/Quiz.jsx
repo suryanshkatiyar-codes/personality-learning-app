@@ -14,7 +14,7 @@ const Quiz = () => {
       submitQuiz();
     }
   }, [answers])
-
+  
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
