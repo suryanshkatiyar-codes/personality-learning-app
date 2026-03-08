@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Quiz from "./pages/Quiz";
 import Dashboard from "./pages/Dashboard";
 import Roadmap from "./pages/Roadmap";
+import Generate from "./pages/Generate";
 
 function App() {
   return (
@@ -43,6 +44,12 @@ function App() {
           <Route path="/roadmap/:id" element={
             <ProtectedRoute>
               <Roadmap />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/generate" element={
+            <ProtectedRoute>
+              <Generate />
             </ProtectedRoute>
           } />
 
