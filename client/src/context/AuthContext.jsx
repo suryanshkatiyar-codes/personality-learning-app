@@ -115,6 +115,7 @@ export function AuthProvider({ children }) {
     register,
     login,
     logout,
+    fetchUser,
   };
 
   // Step 5: While checking login status show nothing

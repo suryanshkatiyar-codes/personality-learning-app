@@ -51,7 +51,7 @@ const Roadmap = () => {
           <h1 className='text-4xl font-light mb-3 capitalize'>
             {roadmap.skill}
           </h1>
-          <span className='bg-yellow-400 text-zinc-950 text-xs font-bold px-3 py-1 tracking-widest uppercase'>
+          <span className='bg-yellow-400 text-zinc-950 text-xs font-bold px-3 py-1 tracking-widest uppercase rounded'>
             {roadmap.personalityType}
           </span>
 
@@ -63,7 +63,7 @@ const Roadmap = () => {
         <p className='text-zinc-500 text-xs tracking-widest uppercase mb-6'>
           Learning Path
         </p>
-        <div className='text-zinc-300 text-sm leading-8 whitespace-pre-wrap border border-zinc-800 bg-zinc-900 p-8'>
+        <div className='text-zinc-300 text-sm leading-8 whitespace-pre-wrap border border-zinc-800 bg-zinc-900 p-8 rounded'>
           {roadmap.roadmap}
         </div>
       </div>

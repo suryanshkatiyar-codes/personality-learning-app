@@ -49,7 +49,7 @@ const Generate = () => {
             placeholder='What do you want to learn?'
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide'
+            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
           />
 
           {error && (
@@ -58,7 +58,7 @@ const Generate = () => {
 
           <button
             disabled={loading}
-            className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+            className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl'
           >
             {loading ? 'Generating...' : 'Generate'}
           </button>

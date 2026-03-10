@@ -77,6 +77,7 @@ const Home = () => {
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
             onClick={() => navigate('/register')}
+            className='rounded-2xl active:scale-95'
             style={{
               backgroundColor: '#eab308',
               color: '#0a0a0a',
@@ -96,6 +97,7 @@ const Home = () => {
           </button>
           <button
             onClick={() => navigate('/login')}
+            className='rounded-2xl active:scale-95'
             style={{
               backgroundColor: 'transparent',
               color: '#f0f0f0',
@@ -235,6 +237,7 @@ const Home = () => {
         </h2>
         <button
           onClick={() => navigate('/register')}
+          className='rounded-2xl'
           style={{
             backgroundColor: '#eab308',
             color: '#0a0a0a',

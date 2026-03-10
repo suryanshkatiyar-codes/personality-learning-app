@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
-  const { login } = useAuth;
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +25,7 @@ const Login = () => {
   }
 
   return (
-    <div className='min-h-screen bg-zinc-950 text-white flex justify-center items-center px-4'>
+    <div className='h-screen bg-zinc-950 text-white flex justify-center items-center px-4'>
       <div className='w-full max-w-md'>
 
         {/* Heading */}
@@ -43,7 +43,7 @@ const Login = () => {
         <form onSubmit={(e) => formHandler(e)} className='flex flex-col gap-4'>
 
           <input
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide'
+            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
             onChange={(e) => setEmail(e.target.value)}
             type="text"
             value={email}
@@ -51,7 +51,7 @@ const Login = () => {
           />
 
           <input
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide'
+            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             value={password}
@@ -63,7 +63,7 @@ const Login = () => {
             <p className='text-red-400 text-xs tracking-wide'>{error}</p>
           )}
 
-          <button className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200'>
+          <button className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200 rounded-2xl'>
             Submit
           </button>
 
