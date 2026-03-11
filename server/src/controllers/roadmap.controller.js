@@ -15,10 +15,10 @@ async function generateRoadmap(req, res) {
       skill,
       personalityType,
       roadmap,
-      completed:false,
+      completed: false,
     })
 
-    res.status(201).json({ message: "New roadmap created", roadmap });
+    res.status(201).json({ message: "New roadmap created", newRoadmap });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Server error", err });
@@ -43,8 +43,8 @@ async function getRoadmap(req, res) {
     const userId = req.user.id;
     const roadmap = await roadmapModel.findOne({ _id: roadmapId, userId });
 
-    if(!roadmap){
-      return res.status(404).json({message:"The given roadmap doesn't exist"});
+    if (!roadmap) {
+      return res.status(404).json({ message: "The given roadmap doesn't exist" });
     }
 
     res.status(200).json({
@@ -63,8 +63,8 @@ async function deleteRoadmap(req, res) {
     const userId = req.user.id;
     const roadmap = await roadmapModel.findOneAndDelete({ _id: roadmapId, userId });
 
-    if(!roadmap){
-      return res.status(404).json({message:"The given roadmap doesn't exist"});
+    if (!roadmap) {
+      return res.status(404).json({ message: "The given roadmap doesn't exist" });
     }
 
     return res.status(200).json({
@@ -76,56 +76,99 @@ async function deleteRoadmap(req, res) {
   }
 }
 
-async function markComplete(req,res){
-  try{
-    const userId=req.user.id;
-    const roadmapId=req.params.id;
-    const roadmap=await roadmapModel.findOneAndUpdate({_id:roadmapId,userId},{ $set: {completed :true, completedAt:Date.now()}},{new : true});
-    if(!roadmap){
-      return res.status(404).json({message:"Roadmap does not exist"})
+async function markComplete(req, res) {
+  try {
+    const userId = req.user.id;
+    const roadmapId = req.params.id;
+    const roadmap = await roadmapModel.findOneAndUpdate({ _id: roadmapId, userId }, { $set: { completed: true, completedAt: Date.now() } }, { new: true });
+    if (!roadmap) {
+      return res.status(404).json({ message: "Roadmap does not exist" })
     }
-    return res.status(200).json({message:"This roadmap is completed by the user",roadmap})
+    return res.status(200).json({ message: "This roadmap is completed by the user", roadmap })
 
-    }catch(err){
-      return res.status(500).json({message: "Server Error",err})
-    }
-  }
-
-async function viewRecommendations(req,res){
-  try{
-    const userId=req.user.id;
-    const user=await userModel.findById(userId);
-    const personalityType=user.personalityType;
-    const completedRoadmaps=await roadmapModel.find({userId,completed:true});
-    if(!completedRoadmaps){
-      return res.status(404).json({message:"No completed roadmaps yet",err})
-    }
-    const completedSkills=completedRoadmaps.map(r=>r.skill).join(",");
-    const recommendations=await recommendedRoadmap(personalityType,completedSkills);
-    return res.status(201).json({message:"Recommendations fetched successfully",recommendations});
-  }catch(err){
-    return res.status(500).json({message:"Server Error",err});
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err })
   }
 }
 
-async function generateRecommendedRoadmap(req,res){
-  try{
-    const userId=req.user.id;
-    const user=await userModel.findById(userId);
-    const {personalityType}=user;
-    const skill=req.params.skill;
-    const roadmap=await generateRoadmapAI(personalityType,skill);
-    const newRoadmap=await roadmapModel.create({
+async function viewRecommendations(req, res) {
+  try {
+    const userId = req.user.id;
+    const user = await userModel.findById(userId);
+    const personalityType = user.personalityType;
+    const completedRoadmaps = await roadmapModel.find({ userId, completed: true });
+    if (!completedRoadmaps) {
+      return res.status(404).json({ message: "No completed roadmaps yet", err })
+    }
+    const completedSkills = completedRoadmaps.map(r => r.skill).join(",");
+    const recommendations = await recommendedRoadmap(personalityType, completedSkills);
+    return res.status(201).json({ message: "Recommendations fetched successfully", recommendations });
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err });
+  }
+}
+
+async function generateRecommendedRoadmap(req, res) {
+  try {
+    const userId = req.user.id;
+    const user = await userModel.findById(userId);
+    const { personalityType } = user;
+    const skill = req.params.skill;
+    const roadmap = await generateRoadmapAI(personalityType, skill);
+    const newRoadmap = await roadmapModel.create({
       userId,
       skill,
       personalityType,
       roadmap,
-      completed:false,
+      completed: false,
     })
-    return res.status(201).json({message:"New roadmap generated",newRoadmap});
-  }catch(err){
-    return res.status(500).json({message:"Server Error",err});
+    return res.status(201).json({ message: "New roadmap generated", newRoadmap });
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err });
   }
 }
 
-module.exports = { generateRoadmap, viewRoadmaps, getRoadmap, deleteRoadmap, markComplete, viewRecommendations, generateRecommendedRoadmap };
+async function completedTask(req, res) {
+  try {
+    const userId = req.user.id;
+    const roadmapId = req.params.id;
+    const { dayIndex, subtaskIndex, completed } = req.body;
+    let roadmap = await roadmapModel.findOneAndUpdate(
+      { _id: roadmapId, userId },
+      {
+        $set: {
+          [`roadmap.${dayIndex}.subtasks.${subtaskIndex}.completed`]: completed,
+        }
+      },
+      { returnDocument: "after" }
+    );
+
+    if (!roadmap) {
+      return res.status(404).json({ message: "Roadmap does not exist" });
+    }
+
+    // Check if all subtasks in that day are completed
+    const allSubtasksCompleted = roadmap.roadmap[dayIndex].subtasks.every(
+      (subtask) => subtask.completed === true
+    );
+
+    if (allSubtasksCompleted) {
+      roadmap = await roadmapModel.findOneAndUpdate(
+        { _id: roadmapId, userId },
+        {
+          $set: {
+            [`roadmap.${dayIndex}.completed`]: true
+          }
+        },
+        { new: true }
+      );
+    }
+
+
+    return res.status(200).json({ message: "Task marked completed", roadmap });
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err });
+  }
+}
+
+module.exports = { generateRoadmap, viewRoadmaps, getRoadmap, deleteRoadmap, markComplete, viewRecommendations, generateRecommendedRoadmap, completedTask };

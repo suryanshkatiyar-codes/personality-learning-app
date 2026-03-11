@@ -18,17 +18,28 @@ async function generateRoadmap(personalityType, skill) {
 
     // Build a smart prompt tailored to the user's learning style
     const prompt = `
-      Generate a structured 8-week learning roadmap for someone who wants to learn ${skill}.
+      You are an expert learning coach.Generate a 28 - day structured learning roadmap for someone who wants to learn ${skill}.
       This person is a ${personalityType} learner who ${learningStyle}.
-      
-      For each week provide:
-      - Week number and title
-      - Main topics to cover
-      - Recommended resources that match their learning style
-      - A small practical task or milestone
-      
-      Make the roadmap specific, actionable and tailored to a ${personalityType} learner.
-      Format the response in a clean readable way.
+
+      Rules:
+        - Exactly 28 days, one object per day
+        - Each day has one focused topic and 3 - 5 actionable subtasks
+        - Subtasks must be specific and actionable, not vague
+        - Progress from beginner to advanced naturally across 28 days
+        - Tailor tasks to a ${personalityType} learner's style
+
+      Return ONLY a raw JSON array with no markdown, no explanation, no code fences:
+        [
+          {
+            "day": 1,
+            "topic": "Topic name here",
+            "subtasks": [
+              "Specific actionable task 1",
+              "Specific actionable task 2",
+              "Specific actionable task 3"
+            ]
+          }
+        ]
     `;
 
     // Send the prompt to Groq
@@ -40,13 +51,22 @@ async function generateRoadmap(personalityType, skill) {
           content: prompt
         }
       ],
-      max_tokens: 1024,
+      max_tokens: 8192,
     });
 
-    // Extract the text from Groq's response
-    const roadmapText = response.choices[0].message.content;
+    const text = response.choices[0].message.content;
+    const clean = text.replace(/```json|```/g, "").trim();
+    const roadmap = JSON.parse(clean);
 
-    return roadmapText;
+    const structuredRoadmap = roadmap.map(day => ({
+      ...day,
+      subtasks: day.subtasks.map(task => ({
+        task: task,
+        completed: false
+      }))
+    }));
+
+    return structuredRoadmap;
 
   } catch (err) {
     throw new Error("Failed to generate roadmap: " + err.message);
