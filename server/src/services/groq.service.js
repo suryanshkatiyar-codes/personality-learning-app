@@ -53,4 +53,45 @@ async function generateRoadmap(personalityType, skill) {
   }
 }
 
-module.exports = { generateRoadmap };
+async function recommendedRoadmap(personalityType, skill) {
+  try {
+
+    // Build a smart prompt tailored to the user's learning style
+    const prompt = `
+      A user with ${personalityType} learning style has just completed learning ${skill}.
+      Suggest 3 popular and trending skills they should learn next.
+      Return ONLY a JSON array, no markdown, no explanation, just raw JSON like this:
+      [
+        {
+          "skill": "skill name",
+          "whatItDoes": "brief description of what it is",
+          "whyLearn": "why this is a good next step"
+        }
+      ]
+    `;
+
+    // Send the prompt to Groq
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile", // free and powerful model
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 1024,
+    });
+
+    // Extract the text from Groq's response
+    const text = response.choices[0].message.content;
+    const clean = text.replace(/```json|```/g, "").trim();
+    const recommendations = JSON.parse(clean);
+
+    return recommendations;
+
+  } catch (err) {
+    throw new Error("Failed to generate roadmap: " + err.message);
+  }
+}
+
+module.exports = { generateRoadmap, recommendedRoadmap };

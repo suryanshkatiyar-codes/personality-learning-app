@@ -23,7 +23,7 @@ const userSchema=new mongoose.Schema({
   savedRoadmaps:[
     {
       type:mongoose.Schema.Types.ObjectId,
-      ref:'Roadmap'
+      ref:'roadmaps'
     }
   ]
 },{timestamps:true})

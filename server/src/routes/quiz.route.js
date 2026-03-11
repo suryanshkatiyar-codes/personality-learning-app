@@ -4,7 +4,7 @@ const {protect}=require('../middlewares/auth.middleware');
 
 const router=express.Router();
 
-router.get('/questions',quizController.getQuestions);
+router.get('/questions',protect,quizController.getQuestions);
 router.get('/results',protect,quizController.getResults);
 router.post('/submit',protect,quizController.submitQuiz);
 

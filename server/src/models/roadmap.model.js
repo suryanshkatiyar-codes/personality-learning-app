@@ -18,6 +18,13 @@ const roadmapSchema=mongoose.Schema({
     type:String,
     required:true,
   },
+  completed:{
+    type:Boolean,
+    required:true,
+  },
+  completedAt:{
+    type:Date,
+  }
 },{timestamps : true});
 
 const roadmapModel=mongoose.model("roadmaps",roadmapSchema);
