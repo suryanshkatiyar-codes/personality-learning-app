@@ -8,9 +8,12 @@ router.get('/view',protect,roadmapController.viewRoadmaps)
 router.get('/recommendations',protect,roadmapController.viewRecommendations);
 router.patch('/progress/:id',protect,roadmapController.completedTask);
 router.post('/recommendations/:skill',protect,roadmapController.generateRecommendedRoadmap);
-router.patch('/completed/:id', protect, roadmapController.markComplete);
+router.patch('/completed/:id', protect, roadmapController.markRoadmapComplete);
 router.get('/:id',protect,roadmapController.getRoadmap);
 router.delete('/:id',protect,roadmapController.deleteRoadmap);
+router.get('/:id/quiz'.protect,roadmapController.quizOnRoadmap);
+router.post('/:id/quiz/submit'.protect,roadmapController.submitRoadmapQuiz);
+// these types of routes (last 2) should always be at the bottom
 
 
 module.exports=router;

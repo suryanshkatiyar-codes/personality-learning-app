@@ -58,6 +58,7 @@ async function generateRoadmap(personalityType, skill) {
     const clean = text.replace(/```json|```/g, "").trim();
     const roadmap = JSON.parse(clean);
 
+    // revise it later
     const structuredRoadmap = roadmap.map(day => ({
       ...day,
       subtasks: day.subtasks.map(task => ({
@@ -114,4 +115,60 @@ async function recommendedRoadmap(personalityType, skill) {
   }
 }
 
-module.exports = { generateRoadmap, recommendedRoadmap };
+async function roadmapQuiz(skill, completedTopics) {
+  try {
+    const prompt = `
+  You are an expert quiz generator.
+  A user has been learning ${skill} and has completed the following topics: ${completedTopics.join(", ")}.
+  
+  Generate exactly ${completedTopics.length} quiz questions based ONLY on these topics.
+  Mix between multiple choice (mcq) and true/false questions.
+  
+  Rules:
+  - Base questions strictly on the provided topics only
+  - For mcq: provide exactly 4 options
+  - For truefalse: options must be exactly ["True", "False"]
+  - Always include the correct answer in the answer field
+  - Make questions specific and relevant, not vague
+  
+  Return ONLY a raw JSON array with no markdown, no explanation, no code fences:
+  [
+    {
+      "question": "What is JSX in React?",
+      "type": "mcq",
+      "options": ["A way to write HTML in JS", "A database", "A CSS framework", "A testing tool"],
+      "answer": "A way to write HTML in JS"
+    },
+    {
+      "question": "React uses a virtual DOM",
+      "type": "truefalse",
+      "options": ["True", "False"],
+      "answer": "True"
+    }
+  ]
+`;
+
+    // Send the prompt to Groq
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile", // free and powerful model
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 4096,
+    });
+
+    const text = response.choices[0].message.content;
+    const clean = text.replace(/```json|```/g, "").trim();
+    const quiz = JSON.parse(clean);
+
+    return quiz;
+  } catch (err) {
+    throw new Error("Failed to generate quiz:", err.message);
+  }
+
+}
+
+module.exports = { generateRoadmap, recommendedRoadmap, roadmapQuiz };

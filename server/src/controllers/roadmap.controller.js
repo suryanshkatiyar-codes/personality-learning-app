@@ -1,6 +1,6 @@
 const roadmapModel = require('../models/roadmap.model');
 const userModel = require('../models/user.model')
-const { generateRoadmap: generateRoadmapAI, recommendedRoadmap } = require('../services/groq.service');
+const { generateRoadmap: generateRoadmapAI, recommendedRoadmap, roadmapQuiz } = require('../services/groq.service');
 
 async function generateRoadmap(req, res) {
   try {
@@ -76,13 +76,22 @@ async function deleteRoadmap(req, res) {
   }
 }
 
-async function markComplete(req, res) {
+async function markRoadmapComplete(req, res) {
   try {
     const userId = req.user.id;
     const roadmapId = req.params.id;
-    const roadmap = await roadmapModel.findOneAndUpdate({ _id: roadmapId, userId }, { $set: { completed: true, completedAt: Date.now() } }, { new: true });
+    let roadmap = await roadmapModel.findOne({ _id: roadmapId, userId });
     if (!roadmap) {
       return res.status(404).json({ message: "Roadmap does not exist" })
+    }
+    const allDaysCompleted = roadmap.roadmap.every(
+      (day) => day.completed === true
+    );
+    if (allDaysCompleted) {
+      roadmap = await roadmapModel.findOneAndUpdate({ _id: roadmapId, userId }, { $set: { completed: true, completedAt: Date.now() } }, { returnDocument: 'after' });
+    }
+    else {
+      return res.status(400).json({ message: "Finish all the daily tasks in order to mark it completed" });
     }
     return res.status(200).json({ message: "This roadmap is completed by the user", roadmap })
 
@@ -91,6 +100,7 @@ async function markComplete(req, res) {
   }
 }
 
+// revise
 async function viewRecommendations(req, res) {
   try {
     const userId = req.user.id;
@@ -127,7 +137,7 @@ async function generateRecommendedRoadmap(req, res) {
     return res.status(500).json({ message: "Server Error", err });
   }
 }
-
+// revise
 async function completedTask(req, res) {
   try {
     const userId = req.user.id;
@@ -160,7 +170,7 @@ async function completedTask(req, res) {
             [`roadmap.${dayIndex}.completed`]: true
           }
         },
-        { new: true }
+        { returnDocument: "after" }
       );
     }
 
@@ -171,4 +181,51 @@ async function completedTask(req, res) {
   }
 }
 
-module.exports = { generateRoadmap, viewRoadmaps, getRoadmap, deleteRoadmap, markComplete, viewRecommendations, generateRecommendedRoadmap, completedTask };
+async function quizOnRoadmap(req, res) {
+  try {
+    const userId = req.user.id;
+    const roadmapId = req.params.id;
+    const roadmap = await roadmapModel.findOne({ _id: roadmapId, userId });
+    if (!roadmap) {
+      return res.status(400).json({ message: "Roadmap does not exist" });
+    }
+    const {skill}=roadmap;
+    const completedDays = roadmap.roadmap.filter(day => day.completed === true);
+    let completedTopics = completedDays.map((day) => (day.topic));
+    const quiz = await roadmapQuiz(skill, completedTopics);
+    return res.status(200).json({ message: "Quiz generated successfully", quiz });
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", err });
+  }
+}
+
+async function submitRoadmapQuiz(req, res) {
+  try{
+    const userId=req.user.id;
+    const roadmapId=req.params.id;
+    const roadmap=await roadmapModel.findOne({_id:roadmapId,userId});
+    if(!roadmap){
+      return res.status(400).json({message:"Roadmap does not exist"});
+    }
+    const {answers}=req.body;
+    const {questions}=req.body;
+
+    let score=answers.filter((ans,index)=>ans===questions[index].answer).length;
+    const percentage=Math.round((score/questions.length)*100);
+
+    roadmap.quizHistory.push({
+      attemptDate:Date.now(),
+      totalQuestions:questions.length,
+      score,
+      percentage,
+    })
+
+    await roadmap.save();
+
+    return res.status(201).json({message:"Quiz attempted successfully",roadmap});
+  }catch(err){
+    return res.status(500).json({message:"Server Error",err})
+  }
+}
+
+module.exports = { generateRoadmap, viewRoadmaps, getRoadmap, deleteRoadmap, markRoadmapComplete, viewRecommendations, generateRecommendedRoadmap, completedTask, quizOnRoadmap, submitRoadmapQuiz };

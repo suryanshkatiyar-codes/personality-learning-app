@@ -18,7 +18,7 @@ const roadmapSchema = mongoose.Schema({
     {
       day: { type: Number },
       topic: { type: String },
-      completed: { type: Boolean, default: false },
+      completed: { type: Boolean, default: true },
       subtasks: [
         {
           task: { type: String },
@@ -33,7 +33,15 @@ const roadmapSchema = mongoose.Schema({
   },
   completedAt: {
     type: Date,
-  }
+  },
+  quizHistory:[
+    {
+    attemptDate:{type:Date,default:Date.now},
+    totalQuestions:{type:Number},
+    score:{type:number},
+    percentage:{type:number},
+    }
+  ],
 }, { timestamps: true });
 
 const roadmapModel = mongoose.model("roadmaps", roadmapSchema);
