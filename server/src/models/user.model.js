@@ -25,7 +25,18 @@ const userSchema=new mongoose.Schema({
       type:mongoose.Schema.Types.ObjectId,
       ref:'roadmaps'
     }
-  ]
+  ],
+  currentStreak:{
+    type:Number,
+    default:0,
+  },
+  longestStreak:{
+    type:Number,
+    default:0,
+  },
+  lastActivityDate:{
+    type:Date,
+  },
 },{timestamps:true})
 
 const userModel=mongoose.model("users",userSchema);

@@ -22,7 +22,7 @@ const roadmapSchema = mongoose.Schema({
       subtasks: [
         {
           task: { type: String },
-          completed: { type: Boolean, default: false }
+          completed: { type: Boolean, default: true }
         }
       ]
     }
@@ -38,8 +38,8 @@ const roadmapSchema = mongoose.Schema({
     {
     attemptDate:{type:Date,default:Date.now},
     totalQuestions:{type:Number},
-    score:{type:number},
-    percentage:{type:number},
+    score:{type:Number},
+    percentage:{type:Number},
     }
   ],
 }, { timestamps: true });
