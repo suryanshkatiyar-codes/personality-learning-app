@@ -27,88 +27,136 @@ const Dashboard = () => {
     fetchUser();
   }, [])
 
+  const newRoadmap = () => {
+    if (user.personalityType) {
+      navigate("/generate");
+    } else {
+      navigate("/quiz");
+    }
+  }
+
   if (loading) return (
-    <div style={styles.loadingScreen}>
-      <div style={styles.loadingDot} />
-      <p style={styles.loadingText}>Loading your journey...</p>
+    <div className='min-h-screen bg-zinc-950 text-white flex flex-col justify-center items-center gap-4'>
+      {/* <div className='w-2 h-2 rounded-full bg-yellow-400 animate-pulse' /> */}
+      <p className='text-zinc-600 text-xs tracking-widest uppercase'>Loading your journey...</p>
     </div>
   )
 
   if (!user) return null;
 
   const initials = user.username?.slice(0, 2).toUpperCase() || 'U';
+  const isNewUser = !user.personalityType;
 
   return (
-    <div style={styles.page}>
+    <div className='flex min-h-screen bg-zinc-950 text-white'>
 
       {/* Sidebar */}
-      <aside style={styles.sidebar}>
-        <div style={styles.sidebarLogo}>PL</div>
-        <nav style={styles.sidebarNav}>
-          <button style={{ ...styles.navItem, ...styles.navItemActive }}>
-            <span style={styles.navIcon}>⬡</span>
+      <aside className='w-56 min-h-screen bg-zinc-900 border-r border-zinc-800 flex flex-col p-6 sticky top-0 gap-8'>
+        <div className='text-xl font-bold tracking-widest text-yellow-400'>PL</div>
+
+        <nav className='flex flex-col gap-1 flex-1'>
+          <button className='flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-800 text-yellow-400 text-sm text-left'>
+            <span>⬡</span>
             <span>Dashboard</span>
           </button>
-          <button style={styles.navItem} onClick={() => navigate('/roadmaps')}>
-            <span style={styles.navIcon}>◈</span>
+          <button
+            onClick={() => navigate('/roadmaps')}
+            className='flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 text-sm text-left transition-all duration-150'
+          >
+            <span>◈</span>
             <span>Roadmaps</span>
           </button>
-          <button style={styles.navItem} onClick={() => navigate('/quiz')}>
-            <span style={styles.navIcon}>◎</span>
+          <button
+            onClick={() => navigate('/quiz')}
+            className='flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 text-sm text-left transition-all duration-150'
+          >
+            <span>◎</span>
             <span>Quiz</span>
           </button>
         </nav>
-        <div style={styles.sidebarBottom}>
-          <div style={styles.avatarCircle}>{initials}</div>
-          <div>
-            <p style={styles.sidebarUsername}>{user.username}</p>
-            <p style={styles.sidebarEmail}>{user.email}</p>
+
+        <div className='flex items-center gap-3 p-3 bg-zinc-800 rounded-xl'>
+          <div className='w-9 h-9 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center text-xs font-bold flex-shrink-0'>
+            {initials}
+          </div>
+          <div className='min-w-0'>
+            <p className='text-sm font-semibold text-white truncate'>{user.username}</p>
+            <p className='text-xs text-zinc-500 truncate'>{user.email}</p>
           </div>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main style={styles.main}>
+      {/* Main */}
+      <main className='flex-1 px-12 py-10 overflow-y-auto'>
 
         {/* Header */}
-        <div style={styles.header}>
+        <div className='flex justify-between items-start mb-10'>
           <div>
-            <p style={styles.headerGreeting}>Good to see you back</p>
-            <h1 style={styles.headerName}>{user.username}</h1>
+            <p className='text-zinc-500 text-xs tracking-widest uppercase mb-1'>Good to see you back</p>
+            <h1 className='text-4xl font-light tracking-tight'>{user.username}</h1>
           </div>
-          <span style={styles.personalityBadge}>{user.personalityType}</span>
+          {user.personalityType ? (
+            <span className='bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full'>
+              {user.personalityType}
+            </span>
+          ) : (
+            <span className='bg-zinc-800 border border-zinc-700 text-zinc-500 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full'>
+              No Type Yet
+            </span>
+          )}
         </div>
 
-        {/* Stats Row */}
-        <div style={styles.statsGrid}>
-          <StatCard label="Roadmaps Created" value={stats?.numberOfRoadmapsGenerated ?? 0} accent="#facc15" />
-          <StatCard label="Completed" value={stats?.numberOfRoadmapsFinished ?? 0} accent="#4ade80" />
-          <StatCard label="Current Streak" value={`${user.currentStreak ?? 0}d`} accent="#f97316" />
-          <StatCard label="Longest Streak" value={`${user.longestStreak ?? 0}d`} accent="#a78bfa" />
+        {/* New User Banner */}
+        {isNewUser && (
+          <div className='mb-8 border border-yellow-400/30 bg-yellow-400/5 rounded-xl p-6 flex items-center justify-between'>
+            <div>
+              <p className='text-yellow-400 text-xs tracking-widest uppercase font-bold mb-1'>Welcome to your learning journey!</p>
+              <p className='text-zinc-400 text-sm'>Take the personality quiz first so we can generate roadmaps tailored to how you learn best.</p>
+            </div>
+            <button
+              onClick={() => navigate('/quiz')}
+              className='bg-yellow-400 text-zinc-950 text-xs font-bold tracking-widest uppercase px-6 py-3 rounded-lg hover:bg-yellow-300 transition-colors duration-200 flex-shrink-0 ml-6'
+            >
+              Take Quiz →
+            </button>
+          </div>
+        )}
+
+        {/* Stats */}
+        <div className='grid grid-cols-4 gap-4 mb-8'>
+          <StatCard label="Roadmaps Created" value={stats?.numberOfRoadmapsGenerated ?? 0} accent="text-yellow-400" bar="bg-yellow-400" />
+          <StatCard label="Completed" value={stats?.numberOfRoadmapsFinished ?? 0} accent="text-green-400" bar="bg-green-400" />
+          <StatCard label="Current Streak" value={`${user.currentStreak ?? 0}d`} accent="text-orange-400" bar="bg-orange-400" />
+          <StatCard label="Longest Streak" value={`${user.longestStreak ?? 0}d`} accent="text-violet-400" bar="bg-violet-400" />
         </div>
 
-        {/* Quote Banner */}
+        {/* Quote */}
         {quote && (
-          <div style={styles.quoteBanner}>
-            <span style={styles.quoteAccent}>"</span>
-            <p style={styles.quoteText}>{quote}</p>
+          <div className='mb-10 bg-zinc-900 border border-zinc-800 border-l-2 border-l-yellow-400 rounded-r-xl px-6 py-5 flex items-start gap-3'>
+            <span className='text-3xl text-yellow-400 leading-none -mt-1 flex-shrink-0'>"</span>
+            <p className='text-zinc-400 text-sm leading-relaxed italic'>{quote}</p>
           </div>
         )}
 
         {/* Roadmaps Section */}
-        <div style={styles.sectionHeader}>
-          <h2 style={styles.sectionTitle}>Your Roadmaps</h2>
-          <button style={styles.newButton} onClick={() => navigate('/generate')}>
+        <div className='flex justify-between items-center mb-5'>
+          <h2 className='text-xs font-medium text-zinc-500 tracking-widest uppercase'>Your Roadmaps</h2>
+          <button
+            onClick={newRoadmap}
+            className='bg-yellow-400 text-zinc-950 text-xs font-bold tracking-wide px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors duration-200'
+          >
             + New Roadmap
           </button>
         </div>
 
         {roadmaps.length === 0 ? (
-          <div style={styles.emptyState}>
-            <p style={styles.emptyText}>No roadmaps yet. Generate your first one!</p>
+          <div className='border border-dashed border-zinc-800 rounded-xl p-16 text-center'>
+            <p className='text-zinc-600 text-sm'>
+              {isNewUser ? 'Complete the quiz first, then generate your first roadmap!' : 'No roadmaps yet. Generate your first one!'}
+            </p>
           </div>
         ) : (
-          <div style={styles.roadmapGrid}>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
             {roadmaps.map((r) => {
               const completedDays = r.roadmap?.filter(d => d.completed).length ?? 0;
               const totalDays = r.roadmap?.length ?? 28;
@@ -120,50 +168,52 @@ const Dashboard = () => {
               return (
                 <div
                   key={r._id}
-                  style={styles.roadmapCard}
                   onClick={() => navigate(`/roadmap/${r._id}`)}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = '#facc15'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = '#27272a'}
+                  className='bg-zinc-900 border border-zinc-800 hover:border-yellow-400 rounded-2xl p-5 cursor-pointer transition-colors duration-200 flex flex-col gap-4'
                 >
-                  <div style={styles.cardTop}>
+                  {/* Card Top */}
+                  <div className='flex justify-between items-start'>
                     <div>
-                      <p style={styles.cardSkill}>{r.skill}</p>
-                      <span style={styles.cardPersonality}>{r.personalityType}</span>
+                      <p className='text-base font-semibold capitalize mb-1'>{r.skill}</p>
+                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>{r.personalityType}</span>
                     </div>
                     {r.completed && (
-                      <span style={styles.completedBadge}>✓ Done</span>
+                      <span className='bg-green-400/10 border border-green-400/30 text-green-400 text-xs font-bold tracking-wide px-3 py-1 rounded-full flex-shrink-0'>
+                        ✓ Done
+                      </span>
                     )}
                   </div>
 
                   {/* Progress Bar */}
-                  <div style={styles.progressSection}>
-                    <div style={styles.progressLabelRow}>
-                      <span style={styles.progressLabel}>Progress</span>
-                      <span style={styles.progressValue}>{completedDays}/{totalDays} days</span>
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex justify-between'>
+                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>Progress</span>
+                      <span className='text-xs text-zinc-500'>{completedDays}/{totalDays} days</span>
                     </div>
-                    <div style={styles.progressTrack}>
-                      <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+                    <div className='h-px bg-zinc-800 rounded-full overflow-hidden'>
+                      <div
+                        className='h-full bg-yellow-400 rounded-full transition-all duration-500'
+                        style={{ width: `${progress}%` }}
+                      />
                     </div>
                   </div>
 
                   {/* Quiz Score */}
                   {lastAttempt !== null && (
-                    <div style={styles.quizRow}>
-                      <span style={styles.quizLabel}>Last Quiz</span>
-                      <span style={{
-                        ...styles.quizScore,
-                        color: lastAttempt >= 70 ? '#4ade80' : lastAttempt >= 50 ? '#facc15' : '#f87171'
-                      }}>
+                    <div className='flex justify-between items-center bg-zinc-800 rounded-lg px-3 py-2'>
+                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>Last Quiz</span>
+                      <span className={`text-sm font-bold ${lastAttempt >= 70 ? 'text-green-400' : lastAttempt >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
                         {lastAttempt}%
                       </span>
                     </div>
                   )}
 
-                  <div style={styles.cardFooter}>
-                    <span style={styles.cardAttempts}>
+                  {/* Card Footer */}
+                  <div className='flex justify-between items-center pt-2 border-t border-zinc-800'>
+                    <span className='text-xs text-zinc-700'>
                       {r.quizHistory?.length ?? 0} quiz attempt{r.quizHistory?.length !== 1 ? 's' : ''}
                     </span>
-                    <span style={styles.cardArrow}>→</span>
+                    <span className='text-zinc-700 text-sm'>→</span>
                   </div>
                 </div>
               )
@@ -175,388 +225,12 @@ const Dashboard = () => {
   )
 }
 
-const StatCard = ({ label, value, accent }) => (
-  <div style={styles.statCard}>
-    <div style={{ ...styles.statAccentBar, background: accent }} />
-    <p style={styles.statLabel}>{label}</p>
-    <p style={{ ...styles.statValue, color: accent }}>{value}</p>
+const StatCard = ({ label, value, accent, bar }) => (
+  <div className='bg-zinc-900 border border-zinc-800 rounded-xl p-5 relative overflow-hidden'>
+    <div className={`absolute top-0 left-0 right-0 h-0.5 ${bar}`} />
+    <p className='text-xs text-zinc-600 tracking-widest uppercase mb-2'>{label}</p>
+    <p className={`text-4xl font-light tracking-tight ${accent}`}>{value}</p>
   </div>
 )
-
-const styles = {
-  page: {
-    display: 'flex',
-    minHeight: '100vh',
-    background: '#09090b',
-    color: '#fff',
-    fontFamily: "'DM Sans', sans-serif",
-  },
-
-  // Sidebar
-  sidebar: {
-    width: '220px',
-    minHeight: '100vh',
-    background: '#111113',
-    borderRight: '1px solid #1f1f23',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '2rem 1.25rem',
-    position: 'sticky',
-    top: 0,
-    gap: '2rem',
-  },
-  sidebarLogo: {
-    fontSize: '1.4rem',
-    fontWeight: '700',
-    letterSpacing: '0.1em',
-    color: '#facc15',
-    fontFamily: "'Syne', sans-serif",
-  },
-  sidebarNav: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.25rem',
-    flex: 1,
-  },
-  navItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    padding: '0.6rem 0.75rem',
-    borderRadius: '8px',
-    background: 'transparent',
-    border: 'none',
-    color: '#71717a',
-    fontSize: '0.85rem',
-    cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'all 0.15s ease',
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  navItemActive: {
-    background: '#1c1c1f',
-    color: '#facc15',
-  },
-  navIcon: {
-    fontSize: '1rem',
-  },
-  sidebarBottom: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    padding: '0.75rem',
-    background: '#1c1c1f',
-    borderRadius: '10px',
-  },
-  avatarCircle: {
-    width: '34px',
-    height: '34px',
-    borderRadius: '50%',
-    background: '#facc15',
-    color: '#09090b',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    flexShrink: 0,
-  },
-  sidebarUsername: {
-    fontSize: '0.8rem',
-    fontWeight: '600',
-    color: '#fff',
-    margin: 0,
-  },
-  sidebarEmail: {
-    fontSize: '0.7rem',
-    color: '#52525b',
-    margin: 0,
-    maxWidth: '120px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-
-  // Main
-  main: {
-    flex: 1,
-    padding: '2.5rem 3rem',
-    overflowY: 'auto',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '2.5rem',
-  },
-  headerGreeting: {
-    fontSize: '0.75rem',
-    color: '#52525b',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    margin: '0 0 0.4rem',
-  },
-  headerName: {
-    fontSize: '2.2rem',
-    fontWeight: '300',
-    margin: 0,
-    fontFamily: "'Syne', sans-serif",
-    letterSpacing: '-0.02em',
-  },
-  personalityBadge: {
-    background: '#facc1520',
-    border: '1px solid #facc1540',
-    color: '#facc15',
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    padding: '0.4rem 0.9rem',
-    borderRadius: '100px',
-  },
-
-  // Stats
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '1rem',
-    marginBottom: '2rem',
-  },
-  statCard: {
-    background: '#111113',
-    border: '1px solid #1f1f23',
-    borderRadius: '12px',
-    padding: '1.25rem',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  statAccentBar: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '2px',
-    borderRadius: '12px 12px 0 0',
-  },
-  statLabel: {
-    fontSize: '0.72rem',
-    color: '#52525b',
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    margin: '0 0 0.5rem',
-  },
-  statValue: {
-    fontSize: '1.9rem',
-    fontWeight: '300',
-    margin: 0,
-    fontFamily: "'Syne', sans-serif",
-    letterSpacing: '-0.03em',
-  },
-
-  // Quote
-  quoteBanner: {
-    background: '#111113',
-    border: '1px solid #1f1f23',
-    borderLeft: '3px solid #facc15',
-    borderRadius: '0 12px 12px 0',
-    padding: '1.25rem 1.5rem',
-    marginBottom: '2.5rem',
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '0.75rem',
-  },
-  quoteAccent: {
-    fontSize: '2rem',
-    color: '#facc15',
-    lineHeight: 1,
-    fontFamily: "'Syne', sans-serif",
-    flexShrink: 0,
-    marginTop: '-4px',
-  },
-  quoteText: {
-    fontSize: '0.9rem',
-    color: '#a1a1aa',
-    lineHeight: '1.6',
-    margin: 0,
-    fontStyle: 'italic',
-  },
-
-  // Roadmaps Section
-  sectionHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1.25rem',
-  },
-  sectionTitle: {
-    fontSize: '1rem',
-    fontWeight: '500',
-    color: '#a1a1aa',
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    margin: 0,
-  },
-  newButton: {
-    background: '#facc15',
-    color: '#09090b',
-    border: 'none',
-    padding: '0.5rem 1.1rem',
-    borderRadius: '8px',
-    fontSize: '0.8rem',
-    fontWeight: '700',
-    cursor: 'pointer',
-    fontFamily: "'DM Sans', sans-serif",
-    letterSpacing: '0.02em',
-  },
-  roadmapGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '1rem',
-  },
-
-  // Roadmap Card
-  roadmapCard: {
-    background: '#111113',
-    border: '1px solid #27272a',
-    borderRadius: '14px',
-    padding: '1.25rem',
-    cursor: 'pointer',
-    transition: 'border-color 0.2s ease',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  cardTop: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  cardSkill: {
-    fontSize: '1rem',
-    fontWeight: '600',
-    margin: '0 0 0.35rem',
-    textTransform: 'capitalize',
-    fontFamily: "'Syne', sans-serif",
-  },
-  cardPersonality: {
-    fontSize: '0.68rem',
-    color: '#52525b',
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-  },
-  completedBadge: {
-    background: '#4ade8020',
-    border: '1px solid #4ade8040',
-    color: '#4ade80',
-    fontSize: '0.65rem',
-    fontWeight: '700',
-    letterSpacing: '0.08em',
-    padding: '0.25rem 0.6rem',
-    borderRadius: '100px',
-    flexShrink: 0,
-  },
-  progressSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
-  progressLabelRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  progressLabel: {
-    fontSize: '0.7rem',
-    color: '#52525b',
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-  },
-  progressValue: {
-    fontSize: '0.7rem',
-    color: '#71717a',
-  },
-  progressTrack: {
-    height: '3px',
-    background: '#27272a',
-    borderRadius: '100px',
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    background: '#facc15',
-    borderRadius: '100px',
-    transition: 'width 0.4s ease',
-  },
-  quizRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.6rem 0.75rem',
-    background: '#18181b',
-    borderRadius: '8px',
-  },
-  quizLabel: {
-    fontSize: '0.72rem',
-    color: '#52525b',
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-  },
-  quizScore: {
-    fontSize: '0.85rem',
-    fontWeight: '700',
-    fontFamily: "'Syne', sans-serif",
-  },
-  cardFooter: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: '0.5rem',
-    borderTop: '1px solid #1f1f23',
-  },
-  cardAttempts: {
-    fontSize: '0.7rem',
-    color: '#3f3f46',
-  },
-  cardArrow: {
-    color: '#3f3f46',
-    fontSize: '0.85rem',
-    transition: 'color 0.15s ease',
-  },
-
-  // Empty State
-  emptyState: {
-    textAlign: 'center',
-    padding: '4rem 2rem',
-    border: '1px dashed #27272a',
-    borderRadius: '14px',
-  },
-  emptyText: {
-    color: '#3f3f46',
-    fontSize: '0.9rem',
-  },
-
-  // Loading
-  loadingScreen: {
-    minHeight: '100vh',
-    background: '#09090b',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '1rem',
-  },
-  loadingDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    background: '#facc15',
-    animation: 'pulse 1.2s ease-in-out infinite',
-  },
-  loadingText: {
-    color: '#3f3f46',
-    fontSize: '0.8rem',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-  },
-}
 
 export default Dashboard

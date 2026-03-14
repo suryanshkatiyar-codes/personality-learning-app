@@ -43,7 +43,7 @@ const RoadmapQuiz = () => {
       }
       setSubmitting(true);
       const response = await API.post(`/api/roadmap/${id}/quiz/submit`, { questions, answers });
-      navigate("/dashboard");
+      navigate("/roadmaps");
     } catch (err) {
       console.log("Failed to submit quiz", err);
       setSubmitting(false);
