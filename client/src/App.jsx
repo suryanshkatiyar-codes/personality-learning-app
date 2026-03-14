@@ -12,6 +12,7 @@ import Roadmap from "./pages/Roadmap";
 import Roadmaps from "./pages/Roadmaps"
 import Generate from "./pages/Generate";
 import Navbar from "./components/Navbar";
+import RoadmapQuiz from "./pages/RoadmapQuiz";
 
 function App() {
   return (
@@ -52,6 +53,12 @@ function App() {
           <Route path="/roadmap/:id" element={
             <ProtectedRoute>
               <Roadmap />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/roadmap/:id/quiz" element={
+            <ProtectedRoute>
+              <RoadmapQuiz />
             </ProtectedRoute>
           } />
 

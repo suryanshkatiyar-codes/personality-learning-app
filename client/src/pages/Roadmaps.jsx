@@ -6,14 +6,16 @@ import { useAuth } from '../context/AuthContext';
 const Roadmaps = () => {
 
   const navigate = useNavigate();
-  const { user, logout, loading, fetchUser } = useAuth();
+  const { user, logout, fetchUser } = useAuth();
   const [roadmaps, setRoadmaps] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
       try {
         const response = await API.get('api/roadmap/view');
         setRoadmaps(response.data.roadmaps);
+        setLoading(false);
       } catch (err) {
         console.log("Failed to fetch roadmaps", err);
       }
@@ -38,6 +40,14 @@ const Roadmaps = () => {
       console.log("Failed to delete roadmap", err);
     }
   }
+
+  if (loading) return (
+    <div className='min-h-screen bg-zinc-950 text-white flex justify-center items-center'>
+      <p className='text-zinc-500 text-xs tracking-widest uppercase animate-pulse'>
+        Loading your roadmaps...
+      </p>
+    </div>
+  )
 
   return (
     <div className='min-h-screen bg-zinc-950 text-white'>

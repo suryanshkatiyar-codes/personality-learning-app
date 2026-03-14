@@ -63,6 +63,7 @@ const Roadmap = () => {
           <span className='bg-yellow-400 text-zinc-950 text-xs font-bold px-3 py-1 tracking-widest uppercase rounded'>
             {roadmap.personalityType}
           </span>
+          <button className='ml-5 bg-yellow-400 text-zinc-950 text-xs font-bold px-3 py-1 tracking-widest uppercase rounded' onClick={()=>{navigate(`/roadmap/${id}/quiz`)}}>Quiz</button>
 
         </div>
       </div>
@@ -86,6 +87,7 @@ const Roadmap = () => {
                 <input
                   type='checkbox'
                   checked={elem.completed}
+                  onChange={()=>{}}
                   className='w-4 h-4 accent-yellow-400 cursor-pointer flex-shrink-0'
                 />
               </div>
