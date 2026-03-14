@@ -41,10 +41,10 @@ const Navbar = () => {
               Dashboard
             </Link>
             <Link 
-              to='/quiz' 
+              to='/roadmaps' 
               className='text-zinc-400 hover:text-white hover:bg-black py-2 px-3 rounded-2xl text-sm tracking-wider uppercase transition-all duration-200'
             >
-              Quiz
+              Roadmaps
             </Link>
             <button 
               onClick={logOut}

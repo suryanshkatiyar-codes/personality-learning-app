@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Quiz from "./pages/Quiz";
 import Dashboard from "./pages/Dashboard";
 import Roadmap from "./pages/Roadmap";
+import Roadmaps from "./pages/Roadmaps"
 import Generate from "./pages/Generate";
 import Navbar from "./components/Navbar";
 
@@ -39,6 +40,12 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/roadmaps" element={
+            <ProtectedRoute>
+              <Roadmaps />
             </ProtectedRoute>
           } />
 

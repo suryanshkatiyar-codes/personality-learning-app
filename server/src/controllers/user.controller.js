@@ -1,5 +1,6 @@
 const roadmapModel = require('../models/roadmap.model');
 const userModel = require('../models/user.model');
+const {quote : quoteAi} =require('../services/groq.service');
 
 async function profile(req, res) {
   try {
@@ -27,7 +28,8 @@ async function dashboard(req, res) {
     const roadmaps = await roadmapModel.find({ userId });
     const numberOfRoadmapsGenerated=roadmaps.length;
     let numberOfRoadmapsFinished=roadmaps.filter((r)=>r.completed===true).length;
-    return res.status(200).json({message:"User details fetched successfully",user,stats:{numberOfRoadmapsGenerated,numberOfRoadmapsFinished},roadmaps});
+    const quote=await quoteAi();
+    return res.status(200).json({message:"User details fetched successfully",user,stats:{numberOfRoadmapsGenerated,numberOfRoadmapsFinished},quote,roadmaps});
   } catch (err) {
     return res.status(500).json({ message: "Server Error" })
   }

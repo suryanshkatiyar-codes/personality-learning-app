@@ -29,8 +29,8 @@ async function generateRoadmap(req, res) {
 async function viewRoadmaps(req, res) {
   try {
     const userId = req.user.id;
-    const roadmap = await roadmapModel.find({ userId });
-    res.status(200).json({ message: "Your recent roadmaps is", roadmap });
+    const roadmaps = await roadmapModel.find({ userId });
+    res.status(200).json({ message: "Your recent roadmaps are", roadmaps });
   } catch (err) {
     return res.status(500).json({ message: "Server error", err });
   }

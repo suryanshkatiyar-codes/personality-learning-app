@@ -171,4 +171,30 @@ async function roadmapQuiz(skill, completedTopics) {
 
 }
 
-module.exports = { generateRoadmap, recommendedRoadmap, roadmapQuiz };
+async function quote() {
+  try {
+    const prompt = `Give me a random quote for motivating me for keep going in life and doing the best i can keep it short precise and impactfull.
+`;
+
+    // Send the prompt to Groq
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile", // free and powerful model
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 1024,
+    });
+
+    const text = response.choices[0].message.content;
+
+    return text;
+  } catch (err) {
+    throw new Error("Failed to generate quiz:", err.message);
+  }
+
+}
+
+module.exports = { generateRoadmap, recommendedRoadmap, roadmapQuiz, quote };
