@@ -107,8 +107,8 @@ async function viewRecommendations(req, res) {
     const user = await userModel.findById(userId);
     const personalityType = user.personalityType;
     const completedRoadmaps = await roadmapModel.find({ userId, completed: true });
-    if (!completedRoadmaps) {
-      return res.status(404).json({ message: "No completed roadmaps yet", err })
+    if (completedRoadmaps.length === 0) {
+      return res.status(404).json({ message: "No completed roadmaps yet" })
     }
     const completedSkills = completedRoadmaps.map(r => r.skill).join(",");
     const recommendations = await recommendedRoadmap(personalityType, completedSkills);
@@ -194,7 +194,13 @@ async function completedTask(req, res) {
         await user.save();
       }
     }
+    const allDaysCompleted = roadmap.roadmap.every(
+      (day) => day.completed === true
+    );
 
+    if (allDaysCompleted) {
+      roadmap = await roadmapModel.findOneAndUpdate({ _id: roadmapId, userId }, { $set: { completed: true, completedAt: Date.now() } }, { returnDocument: 'after' });
+    }
 
     return res.status(200).json({ message: "Task marked completed", roadmap });
   } catch (err) {

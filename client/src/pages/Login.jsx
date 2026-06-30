@@ -25,61 +25,56 @@ const Login = () => {
   }
 
   return (
-    <div className='h-screen bg-zinc-950 text-white flex justify-center items-center px-4'>
-      <div className='w-full max-w-md'>
+    <div className='h-screen w-full p-3 md:p-4 mt-20'>
+      <div className='min-h-screen md:h-155 w-full bg-[#505081] flex flex-col md:flex-row justify-center md:justify-between items-center gap-6 md:gap-10 p-4 md:p-5 rounded-3xl md:rounded-4xl'>
 
-        {/* Heading */}
-        <p className='text-zinc-500 text-xs tracking-widest uppercase mb-2'>
-          Welcome back
-        </p>
-        <h1 className='text-4xl font-light mb-2'>
-          Login to <span className='text-yellow-400 italic'>Learner</span>
-        </h1>
-        <p className='text-zinc-500 text-sm mb-10'>
-          Enter your credentials to access your dashboard and roadmaps.
-        </p>
+        {/* Image — hidden on mobile, visible on md+ */}
+        <div className='hidden md:block w-1/2 h-full overflow-hidden bg-amber-500 rounded-4xl'>
+          <img className="object-cover w-full h-full" src="https://images.unsplash.com/photo-1497864149936-d3163f0c0f4b?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
+        </div>
 
-        {/* Form */}
-        <form onSubmit={(e) => formHandler(e)} className='flex flex-col gap-4'>
+        {/* Form section */}
+        <div className='w-full md:w-1/2 h-full bg-[#505081] rounded-3xl md:rounded-4xl flex flex-col gap-8 md:gap-10 justify-center items-center py-10 md:py-0'>
+          
+          <div className='font-medium text-2xl md:text-3xl tracking-wide text-center px-4'>
+            <p>Welcome back Login to <span className='text-yellow-300'>Learner</span></p>
+          </div>
 
-          <input
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            value={email}
-            placeholder='Enter email'
-          />
+          <div className='w-full px-6 md:px-8'>
+            <form className='flex flex-col justify-between items-center gap-5' onSubmit={(e) => formHandler(e)}>
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={email}
+                placeholder='Enter email'
+                className="w-full bg-zinc-900 border border-zinc-700 text-white text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors duration-200 placeholder-zinc-500"
+              />
 
-          <input
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            value={password}
-            placeholder='Enter password'
-          />
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                value={password}
+                placeholder='Enter password'
+                className="w-full bg-zinc-900 border border-zinc-700 text-white text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors duration-200 placeholder-zinc-500"
+              />
 
-          {/* Error message */}
-          {error && (
-            <p className='text-red-400 text-xs tracking-wide'>{error}</p>
-          )}
+              {error && (
+                <p className='text-red-500 text-sm tracking-wide font-medium'>{error}</p>
+              )}
 
-          <button className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200 rounded-2xl'>
-            Submit
-          </button>
+              <button className='w-full md:w-auto bg-yellow-400 py-3 px-16 rounded-2xl hover:bg-yellow-300 cursor-pointer active:scale-90 transition-all duration-300 ease-in-out text-black font-medium'>
+                Submit
+              </button>
 
-        </form>
+            </form>
 
-        {/* Register link */}
-        <p className='text-zinc-600 text-xs text-center mt-6'>
-          Don't have an account?{' '}
-          <span
-            onClick={() => navigate('/register')}
-            className='text-yellow-400 cursor-pointer hover:text-yellow-300 transition-colors duration-200'
-          >
-            Register
-          </span>
-        </p>
+            <p className='mt-8 tracking-wide font-medium text-center'>
+              Don't have an account?{' '}
+              <span className="text-yellow-400 cursor-pointer" onClick={() => navigate('/register')}>Register</span>
+            </p>
+          </div>
 
+        </div>
       </div>
     </div>
   )

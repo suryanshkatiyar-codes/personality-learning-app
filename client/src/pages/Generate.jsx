@@ -27,43 +27,37 @@ const Generate = () => {
   }
 
   return (
-    <div className='min-h-screen bg-zinc-950 text-white flex justify-center items-center px-4'>
-      <div className='w-full max-w-md'>
+    <div className='p-2 mt-21.5 rounded-2xl'>
+      <div className='h-screen w-full flex justify-center items-center bg-[#505081] rounded-2xl'>
+        <div className='flex flex-col md:gap-10 gap-2 px-10 py-15 bg-[#272757] rounded-2xl'>
+          <div className='p-2 md:p-0'>
+            <p className='text-2xl md:text-3xl tracking-wider'>AI Powered</p>
+            <h1>Generate a <span className='md:text-base text-base text-yellow-400'>Roadmap</span></h1>
+            <p className='text-base md:text-xl md:font-medium'>Enter a skill and we'll build a personalized</p>
+            <p className='text-base md:text-xl md:font-medium'>learning path based on your personality type.</p>
+          </div>
 
-        {/* Heading */}
-        <p className='text-zinc-500 text-xs tracking-widest uppercase mb-2'>
-          AI Powered
-        </p>
-        <h1 className='text-4xl font-light mb-2'>
-          Generate a <span className='text-yellow-400 italic'>Roadmap</span>
-        </h1>
-        <p className='text-zinc-500 text-sm mb-10'>
-          Enter a skill and we'll build a personalized learning path based on your personality type.
-        </p>
+          <form className='p-2 md:p-0' onSubmit={(e) => generateRoadmap(e)}>
 
-        {/* Form */}
-        <form onSubmit={(e) => generateRoadmap(e)} className='flex flex-col gap-4'>
+            <input
+              type="text"
+              placeholder='What do you want to learn?'
+              value={skill}
+              onChange={(e) => setSkill(e.target.value)}
+              className='w-full bg-zinc-900 border border-zinc-700 text-white text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors duration-200 placeholder-zinc-500'
+            />
 
-          <input
-            type="text"
-            placeholder='What do you want to learn?'
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-            className='border border-zinc-700 bg-zinc-900 text-white px-4 py-3 focus:outline-none focus:border-yellow-400 w-full placeholder-zinc-600 transition-colors duration-200 text-sm tracking-wide rounded'
-          />
+            {error && (
+              <p className='mt-1 ml-1 text-red-500 font-medium tracking-wide'>{error}</p>
+            )}
+            <div className='flex items-center justify-center'>
+              <button disabled={loading} className='mt-5 bg-yellow-400 hover:bg-yellow-300 text-black font-medium tracking-wide cursor-pointer active:scale-90 transition-all duration-300 px-18 py-2 rounded-2xl'>
+                {loading ? 'Generating...' : 'Generate'}
+              </button>
+            </div>
+          </form>
+        </div>
 
-          {error && (
-            <p className='text-red-400 text-xs tracking-wide'>{error}</p>
-          )}
-
-          <button
-            disabled={loading}
-            className='bg-yellow-400 text-zinc-950 font-bold text-xs tracking-widest uppercase py-3 hover:bg-yellow-300 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl'
-          >
-            {loading ? 'Generating...' : 'Generate'}
-          </button>
-
-        </form>
 
       </div>
     </div>

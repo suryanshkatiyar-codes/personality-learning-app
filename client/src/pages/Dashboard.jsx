@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import API from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import image from '../assets/user.jpeg'
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -36,9 +37,8 @@ const Dashboard = () => {
   }
 
   if (loading) return (
-    <div className='min-h-screen bg-zinc-950 text-white flex flex-col justify-center items-center gap-4'>
-      {/* <div className='w-2 h-2 rounded-full bg-yellow-400 animate-pulse' /> */}
-      <p className='text-zinc-600 text-xs tracking-widest uppercase'>Loading your journey...</p>
+    <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-light tracking-wide mx-8 mt-5'>
+      <p>Loading your journey...</p>
     </div>
   )
 
@@ -48,188 +48,210 @@ const Dashboard = () => {
   const isNewUser = !user.personalityType;
 
   return (
-    <div className='flex min-h-screen bg-zinc-950 text-white'>
+    <div className='min-h-screen w-full max-w-full flex flex-col px-2 py-4 gap-5 overflow-x-hidden md:flex-row md:items-stretch md:px-2 md:py-2 md:gap-10 md:rounded-2xl mt-21.5'>
 
-      {/* Sidebar */}
-      <aside className='w-56 min-h-screen bg-zinc-900 border-r border-zinc-800 flex flex-col p-6 sticky top-0 gap-8'>
-        <div className='text-xl font-bold tracking-widest text-yellow-400'>PL</div>
+      {/* Sidebar - hidden on mobile, visible on pc */}
+      <aside className='hidden md:flex md:flex-col md:items-center md:justify-between md:w-1/4 md:rounded-2xl md:overflow-hidden bg-[#505081]'>
 
-        <nav className='flex flex-col gap-1 flex-1'>
-          <button className='flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-800 text-yellow-400 text-sm text-left'>
-            <span>⬡</span>
-            <span>Dashboard</span>
-          </button>
-          <button
-            onClick={() => navigate('/roadmaps')}
-            className='flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 text-sm text-left transition-all duration-150'
-          >
-            <span>◈</span>
-            <span>Roadmaps</span>
-          </button>
-          <button
-            onClick={() => navigate('/quiz')}
-            className='flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 text-sm text-left transition-all duration-150'
-          >
-            <span>◎</span>
-            <span>Quiz</span>
-          </button>
+        {/* Logo / Brand */}
+        <div className='flex justify-center items-center h-12 w-full mt-5'>
+          <div className='text-2xl font-bold tracking-wider px-4 py-2 bg-[#272757] rounded-2xl'>Personality Learning</div>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className='flex flex-col gap-5 justify-center items-center -mt-25'>
+          <div className='flex flex-col h-40 w-30 rounded-2xl overflow-hidden'>
+            <div className='h-30 w-30'>
+              <img className='w-full h-full object-cover rounded-2xl' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr3jhpAFYpzxx39DRuXIYxNPXc0zI5F6IiMQ&s" alt="" />
+            </div>
+            <div className='flex justify-center items-center h-10 w-full px-4 mt-4 capitalize text-sm font-medium text-gray-800 bg-gray-100 rounded-full truncate'>
+              {user.username}
+            </div>
+          </div>
+          <div className='flex flex-col gap-5'>
+            <button className='text-xl font-medium tracking-wide hover:scale-110 transition-all duration-300 cursor-pointer'>
+              <span>⬡</span>
+              <span>Dashboard</span>
+            </button>
+            <button className='text-xl font-medium tracking-wide hover:scale-110 transition-all duration-300 cursor-pointer' onClick={() => navigate('/roadmaps')}>
+              <span>◈</span>
+              <span>Roadmaps</span>
+            </button>
+            <button className='text-xl font-medium tracking-wide hover:scale-110 transition-all duration-300 cursor-pointer' onClick={() => navigate('/quiz')}>
+              <span>◎</span>
+              <span>Quiz</span>
+            </button>
+          </div>
         </nav>
 
-        <div className='flex items-center gap-3 p-3 bg-zinc-800 rounded-xl'>
-          <div className='w-9 h-9 rounded-full bg-yellow-400 text-zinc-950 flex items-center justify-center text-xs font-bold flex-shrink-0'>
-            {initials}
-          </div>
-          <div className='min-w-0'>
-            <p className='text-sm font-semibold text-white truncate'>{user.username}</p>
-            <p className='text-xs text-zinc-500 truncate'>{user.email}</p>
-          </div>
+        {/* User Email at the bottom of sidebar */}
+        <div className='flex justify-center items-center h-15 w-full'>
+          <p className='font-medium tracking-wide'>{user.email}</p>
         </div>
       </aside>
 
-      {/* Main */}
-      <main className='flex-1 px-12 py-10 overflow-y-auto'>
+      {/* Main Content */}
+      <main className='flex flex-col gap-5 w-full max-w-full overflow-x-hidden rounded-2xl bg-[#505081] px-4 py-4 md:w-3/4 md:px-5 md:py-5'>
 
-        {/* Header */}
-        <div className='flex justify-between items-start mb-10'>
-          <div>
-            <p className='text-zinc-500 text-xs tracking-widest uppercase mb-1'>Good to see you back</p>
-            <h1 className='text-4xl font-light tracking-tight'>{user.username}</h1>
+        {/* Header - Greeting + Personality Type */}
+        <div className='flex justify-between px-2 py-2 items-stretch'>
+          <div className='flex gap-2'>
+            <p className='font-medium tracking-wide'>{isNewUser ? "Hello" : "Good to see you back"}</p>
+            <h1 className='capitalize font-medium tracking-wide'>{user.username}</h1>
           </div>
-          {user.personalityType ? (
-            <span className='bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full'>
-              {user.personalityType}
-            </span>
-          ) : (
-            <span className='bg-zinc-800 border border-zinc-700 text-zinc-500 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full'>
-              No Type Yet
-            </span>
-          )}
+          <div>
+            {user.personalityType ? (
+              <span className='font-bold tracking-wider px-3 py-2 bg-[#272757] rounded-2xl'>{user.personalityType}</span>
+            ) : (
+              <span className='font-bold tracking-wider px-3 py-2 bg-[#272757] rounded-2xl'>No Type Yet</span>
+            )}
+          </div>
         </div>
 
         {/* New User Banner */}
         {isNewUser && (
-          <div className='mb-8 border border-yellow-400/30 bg-yellow-400/5 rounded-xl p-6 flex items-center justify-between'>
+          <div className='-mt-5 ml-2'>
             <div>
-              <p className='text-yellow-400 text-xs tracking-widest uppercase font-bold mb-1'>Welcome to your learning journey!</p>
-              <p className='text-zinc-400 text-sm'>Take the personality quiz first so we can generate roadmaps tailored to how you learn best.</p>
+              <p>Welcome to your learning journey!</p>
+              <p>Take the personality quiz first so we can generate roadmaps tailored to how you learn best.</p>
             </div>
-            <button
-              onClick={() => navigate('/quiz')}
-              className='bg-yellow-400 text-zinc-950 text-xs font-bold tracking-widest uppercase px-6 py-3 rounded-lg hover:bg-yellow-300 transition-colors duration-200 flex-shrink-0 ml-6'
-            >
+            <button className='text-sm font-semibold tracking-wide uppercase text-black transition-all duration-300 cursor-pointer bg-yellow-400 hover:bg-yellow-300 px-6 py-2 ease-in-out rounded-2xl active:scale-90 mt-2' onClick={() => navigate('/quiz')}>
               Take Quiz →
             </button>
           </div>
         )}
 
-        {/* Stats */}
-        <div className='grid grid-cols-4 gap-4 mb-8'>
-          <StatCard label="Roadmaps Created" value={stats?.numberOfRoadmapsGenerated ?? 0} accent="text-yellow-400" bar="bg-yellow-400" />
-          <StatCard label="Completed" value={stats?.numberOfRoadmapsFinished ?? 0} accent="text-green-400" bar="bg-green-400" />
-          <StatCard label="Current Streak" value={`${user.currentStreak ?? 0}d`} accent="text-orange-400" bar="bg-orange-400" />
-          <StatCard label="Longest Streak" value={`${user.longestStreak ?? 0}d`} accent="text-violet-400" bar="bg-violet-400" />
+        {/* Stats Row */}
+        <div className='grid grid-cols-2 gap-4 md:flex md:gap-10'>
+          <StatCard label="Roadmaps Created" value={stats?.numberOfRoadmapsGenerated ?? 0} />
+          <StatCard label="Completed" value={stats?.numberOfRoadmapsFinished ?? 0} />
+          <StatCard label="Current Streak" value={`${user.currentStreak ?? 0}d`} />
+          <StatCard label="Longest Streak" value={`${user.longestStreak ?? 0}d`} />
         </div>
 
-        {/* Quote */}
+        {/* Motivational Quote */}
         {quote && (
-          <div className='mb-10 bg-zinc-900 border border-zinc-800 border-l-2 border-l-yellow-400 rounded-r-xl px-6 py-5 flex items-start gap-3'>
-            <span className='text-3xl text-yellow-400 leading-none -mt-1 flex-shrink-0'>"</span>
-            <p className='text-zinc-400 text-sm leading-relaxed italic'>{quote}</p>
+          <div className='rounded px-2 py-4 bg-[#272757]'>
+            <p className='text-base font-medium tracking-wide'>{quote}</p>
           </div>
         )}
 
-        {/* Roadmaps Section */}
-        <div className='flex justify-between items-center mb-5'>
-          <h2 className='text-xs font-medium text-zinc-500 tracking-widest uppercase'>Your Roadmaps</h2>
-          <button
-            onClick={newRoadmap}
-            className='bg-yellow-400 text-zinc-950 text-xs font-bold tracking-wide px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors duration-200'
-          >
-            + New Roadmap
-          </button>
+        {/* Roadmaps Section Header */}
+        <div className='flex justify-between rounded px-2 py-2'>
+          <p className='font-bold tracking-wider px-3 py-2 bg-[#272757] rounded-2xl'>Your Roadmaps</p>
+          <button className='font-medium tracking-wide hover:scale-105 transition-all duration-300 cursor-pointer' onClick={newRoadmap}>+ New Roadmap</button>
         </div>
 
+        {/* Roadmaps List or Empty State */}
         {roadmaps.length === 0 ? (
-          <div className='border border-dashed border-zinc-800 rounded-xl p-16 text-center'>
-            <p className='text-zinc-600 text-sm'>
+          <div>
+            <p className='ml-2'>
               {isNewUser ? 'Complete the quiz first, then generate your first roadmap!' : 'No roadmaps yet. Generate your first one!'}
             </p>
           </div>
         ) : (
-          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
-            {roadmaps.map((r) => {
-              const completedDays = r.roadmap?.filter(d => d.completed).length ?? 0;
-              const totalDays = r.roadmap?.length ?? 28;
-              const progress = Math.round((completedDays / totalDays) * 100);
-              const lastAttempt = r.quizHistory?.length > 0
-                ? r.quizHistory[r.quizHistory.length - 1].percentage
-                : null;
+          <>
+            <div className='flex flex-col gap-4 md:flex-row md:flex-wrap'>
+              {roadmaps.slice(0, 4).map((r) => {
+                const completedDays = r.roadmap?.filter(d => d.completed).length ?? 0;
+                const totalDays = r.roadmap?.length ?? 28;
+                const progress = Math.round((completedDays / totalDays) * 100);
+                const lastAttempt = r.quizHistory?.length > 0
+                  ? r.quizHistory[r.quizHistory.length - 1].percentage
+                  : null;
 
-              return (
-                <div
-                  key={r._id}
-                  onClick={() => navigate(`/roadmap/${r._id}`)}
-                  className='bg-zinc-900 border border-zinc-800 hover:border-yellow-400 rounded-2xl p-5 cursor-pointer transition-colors duration-200 flex flex-col gap-4'
-                >
-                  {/* Card Top */}
-                  <div className='flex justify-between items-start'>
-                    <div>
-                      <p className='text-base font-semibold capitalize mb-1'>{r.skill}</p>
-                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>{r.personalityType}</span>
+                return (
+                  <div
+                    key={r._id}
+                    onClick={() => navigate(`/roadmap/${r._id}`)}
+                    className='w-full rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg md:w-63.5 bg-[#272757] border border-[#3a3a7a]'
+                  >
+                    {/* Card Top */}
+                    <div className='flex justify-between items-center px-4 py-3 border-b border-[#3a3a7a]'>
+                      <div>
+                        <p className='text-lg font-semibold tracking-wide capitalize text-white'>{r.skill}</p>
+                        <span className='text-xs uppercase tracking-widest text-yellow-400'>{r.personalityType}</span>
+                      </div>
+                      {r.completed && (
+                        <span className='text-xs font-bold tracking-widest uppercase text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-full'>
+                          ✓ Done
+                        </span>
+                      )}
                     </div>
-                    {r.completed && (
-                      <span className='bg-green-400/10 border border-green-400/30 text-green-400 text-xs font-bold tracking-wide px-3 py-1 rounded-full flex-shrink-0'>
-                        ✓ Done
-                      </span>
+
+                    {/* Progress Bar */}
+                    <div className='flex flex-col gap-2 px-4 py-3 border-b border-[#3a3a7a]'>
+                      <div className='flex justify-between'>
+                        <span className='text-xs uppercase tracking-widest text-zinc-400'>Progress</span>
+                        <span className='text-xs text-zinc-400'>{completedDays}/{totalDays} days</span>
+                      </div>
+                      <div className='h-1.5 rounded-full overflow-hidden bg-[#3a3a7a]'>
+                        <div
+                          className='h-full rounded-full bg-yellow-400 transition-all duration-500'
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Last Quiz Score */}
+                    {lastAttempt !== null && (
+                      <div className='flex justify-between px-4 py-3 border-b border-[#3a3a7a]'>
+                        <span className='text-xs uppercase tracking-widest text-zinc-400'>Last Quiz</span>
+                        <span className='text-xs font-bold text-yellow-400'>{lastAttempt}%</span>
+                      </div>
                     )}
-                  </div>
 
-                  {/* Progress Bar */}
-                  <div className='flex flex-col gap-2'>
-                    <div className='flex justify-between'>
-                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>Progress</span>
-                      <span className='text-xs text-zinc-500'>{completedDays}/{totalDays} days</span>
-                    </div>
-                    <div className='h-px bg-zinc-800 rounded-full overflow-hidden'>
-                      <div
-                        className='h-full bg-yellow-400 rounded-full transition-all duration-500'
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Quiz Score */}
-                  {lastAttempt !== null && (
-                    <div className='flex justify-between items-center bg-zinc-800 rounded-lg px-3 py-2'>
-                      <span className='text-xs text-zinc-600 tracking-widest uppercase'>Last Quiz</span>
-                      <span className={`text-sm font-bold ${lastAttempt >= 70 ? 'text-green-400' : lastAttempt >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
-                        {lastAttempt}%
+                    {/* Card Footer */}
+                    <div className='flex justify-between items-center px-4 py-3'>
+                      <span className='text-xs uppercase tracking-widest text-zinc-400'>
+                        {r.quizHistory?.length ?? 0} attempt{r.quizHistory?.length !== 1 ? 's' : ''}
                       </span>
+                      <span className='text-yellow-400 text-sm'>→</span>
                     </div>
-                  )}
-
-                  {/* Card Footer */}
-                  <div className='flex justify-between items-center pt-2 border-t border-zinc-800'>
-                    <span className='text-xs text-zinc-700'>
-                      {r.quizHistory?.length ?? 0} quiz attempt{r.quizHistory?.length !== 1 ? 's' : ''}
-                    </span>
-                    <span className='text-zinc-700 text-sm'>→</span>
                   </div>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+
+            {roadmaps.length > 4 && (
+              <button className='text-xl font-medium tracking-wide hover:scale-110 transition-all duration-300 cursor-pointer' onClick={() => navigate('/roadmaps')}>
+                View All ({roadmaps.length})
+              </button>
+            )}
+          </>
         )}
       </main>
     </div>
   )
 }
 
-const StatCard = ({ label, value, accent, bar }) => (
-  <div className='bg-zinc-900 border border-zinc-800 rounded-xl p-5 relative overflow-hidden'>
-    <div className={`absolute top-0 left-0 right-0 h-0.5 ${bar}`} />
-    <p className='text-xs text-zinc-600 tracking-widest uppercase mb-2'>{label}</p>
-    <p className={`text-4xl font-light tracking-tight ${accent}`}>{value}</p>
+const StatCard = ({ label, value }) => (
+  <div className='
+    w-full rounded-[18px] bg-[#272757] cursor-pointer overflow-hidden
+    border border-white/[0.07]
+    hover:-translate-y-1 hover:scale-[1.02] hover:border-yellow-400/30
+    transition-all duration-250 ease-out
+    group
+  '>
+    <div className='
+      flex justify-center items-center px-3 py-3.5
+      border-b border-white/[0.07]
+      text-[11px] font-semibold tracking-[0.09em] uppercase
+      text-[#7070a8] text-center leading-tight
+    '>
+      {label}
+    </div>
+    <div className='
+      flex justify-center items-center py-5 px-3
+      text-[32px] font-bold tracking-tight text-[#f0f0ff]
+      relative
+      after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
+      after:w-7 after:h-0.5 after:rounded-full after:bg-yellow-400
+      after:opacity-0 group-hover:after:opacity-100
+      after:transition-opacity after:duration-250
+    '>
+      {value}
+    </div>
   </div>
 )
 

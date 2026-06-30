@@ -29,6 +29,7 @@ const roadmapSchema = mongoose.Schema({
   ],
   completed: {
     type: Boolean,
+    default:false,
     required: true,
   },
   completedAt: {
